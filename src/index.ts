@@ -1,22 +1,71 @@
+const body = document.querySelector('body')
+
 const cardsContainer = document.querySelector('.cards-container')
+const modalOverlay = document.querySelector('.overlay')
+const modalContainer = document.querySelector('.modal-container')
+const addBookButton: HTMLButtonElement =
+  document.querySelector('#add-book')
+
+const titleInput: HTMLInputElement =
+  document.querySelector('#book-title')
+const authorInput: HTMLInputElement =
+  document.querySelector('#book-author')
+const pagesInput: HTMLInputElement =
+  document.querySelector('#book-pages')
+const readCheackbox: HTMLInputElement =
+  document.querySelector('#checkbox-rect')
+const formBook: HTMLFormElement = document.querySelector('#book-form')
 
 type bookType = {
   title: string
   author: string
   numberOfPages: number
+  read: boolean
 }
 
 const myLibrary: bookType[] = []
 
-function Book(title: string, author: string, numberOfPages: number) {
+function Book({ title, author, numberOfPages, read }: bookType) {
   this.title = title
   this.author = author
   this.numberOfPages = numberOfPages
+  this.read = read
 }
 
-myLibrary.push(new Book('The Final Empire', 'Brandon Sanderson', 422))
+function addBook() {
+  const bookData = new Book({
+    title: titleInput.value,
+    author: authorInput.value,
+    numberOfPages: parseInt(pagesInput.value),
+    read: readCheackbox.checked,
+  })
 
-function createCardElement() {
+  myLibrary.push(bookData)
+}
+
+function changeReadButton(
+  readButton: HTMLButtonElement,
+  read: boolean
+) {
+  if (!read) {
+    readButton.classList.add('not-read')
+    readButton.innerText = 'Not read'
+    return
+  }
+
+  readButton.classList.remove('not-read')
+  readButton.innerText = 'Read'
+}
+
+function showModal() {
+  modalOverlay.classList.toggle('show-modal')
+  body.classList.toggle('overflow-hidden')
+}
+
+function createCardElement(
+  { title, author, numberOfPages, read }: bookType,
+  index: number
+) {
   const card = document.createElement('div')
   const titleBook = document.createElement('p')
   const authorBook = document.createElement('p')
@@ -30,14 +79,33 @@ function createCardElement() {
   readButton.classList.add('btn')
   removeButton.classList.add('btn')
 
+  card.setAttribute('data-index', `${index}`)
   readButton.setAttribute('id', 'read-button')
   removeButton.setAttribute('id', 'remove-button')
 
-  titleBook.innerText = 'The Final Empire'
-  authorBook.innerText = 'Brandon Sanderson'
-  pagesBook.innerText = `${422} pages`
+  titleBook.innerText = title
+  authorBook.innerText = author
+  pagesBook.innerText = `${numberOfPages} pages`
   removeButton.innerText = 'Remove'
-  readButton.innerText = 'Read'
+  readButton.innerText = read ? 'Read' : 'Not read'
+
+  if (!read) {
+    readButton.classList.add('not-read')
+  }
+
+  readButton.addEventListener('click', () => {
+    if (read) {
+      read = false
+    } else {
+      read = true
+    }
+
+    changeReadButton(readButton, read)
+  })
+  removeButton.addEventListener('click', () => {
+    card.remove()
+    myLibrary.splice(parseInt(card.getAttribute('data-index')), 1)
+  })
 
   buttonGroup.appendChild(readButton)
   buttonGroup.appendChild(removeButton)
@@ -49,4 +117,29 @@ function createCardElement() {
   cardsContainer.appendChild(card)
 }
 
-createCardElement()
+addBookButton.addEventListener('click', showModal)
+modalOverlay.addEventListener('click', () => {
+  showModal()
+})
+modalContainer.addEventListener('click', (event) =>
+  event.stopPropagation()
+)
+
+formBook.addEventListener('submit', (event) => {
+  event.preventDefault()
+  addBook()
+  myLibrary.map(() => {
+    if (cardsContainer.firstChild) {
+      cardsContainer.removeChild(cardsContainer.firstChild)
+    }
+  })
+  myLibrary.map((book, index) => {
+    createCardElement(book, index)
+  })
+  showModal()
+  titleInput.value = ''
+  authorInput.value = ''
+  pagesInput.value = ''
+  readCheackbox.checked = false
+  return false
+})

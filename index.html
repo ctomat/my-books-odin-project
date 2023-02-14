@@ -16,18 +16,18 @@
             <header>
                 <h2>Add a new book!</h2>
             </header>
-            <form>
+            <form id="book-form">
                 <fieldset>
-                    <input placeholder="Title" type="text" name="book-title" id="book-title">
-                    <input placeholder="Author" type="text" name="book-author" id="book-author">
-                    <input placeholder="Pages" type="number" name="book-pages" id="book-pages" min="0">
+                    <input placeholder="Title" type="text" name="book-title" id="book-title" required>
+                    <input placeholder="Author" type="text" name="book-author" id="book-author" required>
+                    <input placeholder="Pages" type="number" name="book-pages" id="book-pages" min="0" required>
                     <div class="item">
                         <div class="checkbox-rect">
                             <input type="checkbox" id="checkbox-rect" name="check">
                             <label for="checkbox-rect">Did you read it?</label>
                         </div>
                     </div>
-                    <button class="btn" type="button">Submit</button>
+                    <button class="btn" type="submit" id="submit-button">Submit</button>
                 </fieldset>
             </form>
         </div>
@@ -46,7 +46,7 @@
     </nav>
     <main class="main-container">
         <div class="button-container button-add-container">
-            <button type="button" class="btn">
+            <button type="button" class="btn" id="add-book">
                 Add New Book
             </button>
         </div>

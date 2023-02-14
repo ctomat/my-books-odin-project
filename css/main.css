@@ -51,6 +51,11 @@ h6 {
     width: 200px;
 }
 
+.not-read {
+    background-color: var(--ruby-red-color);
+    color: var(--skin-secondary-color);
+}
+
 .cards-container {
     display: grid;
     place-items: center;
@@ -60,7 +65,7 @@ h6 {
 }
 
 .card-container {
-    width: 100%;
+    width: min(100%, 300px);
     height: 100%;
     background-color: var(--skin-secondary-color);
     padding: 20px;
@@ -83,6 +88,16 @@ h6 {
     width: 100%;
     height: 100%;
     background-color: rgba(0, 0, 0, 0.468);
+    z-index: 2;
+}
+
+
+.show-modal {
+    display: initial;
+}
+
+.overflow-hidden {
+    overflow-y: hidden;
 }
 
 .overlay.active {
@@ -94,7 +109,7 @@ h6 {
     color: var(--pale-grey-color);
     height: auto;
     width: fit-content;
-    position: absolute;
+    position: relative;
     z-index: 9;
     left: 0;
     right: 0;
